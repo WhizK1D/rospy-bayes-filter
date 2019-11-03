@@ -5,8 +5,14 @@ import rosbag
 import numpy
 import math
 import tf
+import timeit
+
 
 class ROSBagParser:
+    '''
+    Simple class to parse the bag file and spit out the messages
+    from the same for other nodes to consume
+    '''
     def __init__(self, rosbagPath="../data/grid.bag"):
         rospy.init_node("rosbag_parser")
         self.ROSBag = rosbag.Bag(rosbagPath)
@@ -25,17 +31,21 @@ class ROSBagParser:
         '''
         Message from rosbag decomposes as below:
         Movement -> msg.translation, msg.rotation1, msg.rotation2
-        Observation -> msg.range, msg.bearing
+        Observation -> msg.range, msg.bearing, msg.tagNum
+
+        Once decomposed, these would be published to respective movements
+        and observations topics to be read by motion and sensor models
+        respectively.
         '''
         rospy.loginfo("Trying to read bag file...")
-        bag = rosbag.Bag("../data/grid.bag")
 
         try:
-            for topic, msg, time_stamp in bag.read_messages(
+            for topic, msg, _time_stamp in self.ROSBag.read_messages(
                     topics = ['Movements', 'Observations']):
+
                 if (topic == "Movements"):
                     rospy.loginfo("Reading Motion Model...")
-                    # TODO: Parse different values and log instead of print
+
                     # Parse msg.rotation1
                     rotation1 = self.__toDegrees(msg.rotation1)
                     rospy.loginfo("Rotation 1: {}".format(str(rotation1)))
@@ -46,15 +56,32 @@ class ROSBagParser:
 
                     # Parse msg.translation
                     translation = msg.translation
-                    rospy.loginfo("Translation: {}m".format(str(translation)))
+                    rospy.loginfo("Translation: {} m ({} cm)".format(
+                        str(translation), str(translation*100)))
+
+                    # TODO: Publish data to motion model
 
                 elif (topic == "Observations"):
-                    # TODO: Parse different values and log instead of print
-                    pass
+                    rospy.loginfo("Reading Sensor Model...")
+
+                    # Parse tag number
+                    tagNumber = msg.tagNum
+                    rospy.loginfo("Tag No.: {}".format(str(tagNumber)))
+
+                    # Parse range
+                    range = msg.range
+                    rospy.loginfo("Range: {}".format(range))
+
+                    # Parse bearing
+                    bearing = msg.bearing
+                    rospy.loginfo("Bearing:\n{}".format(str(bearing)))
+
+                    # TODO: Publish data to sensor model
+
         finally:
-            bag.close()
+            self.ROSBag.close()
 
 
 if __name__ == "__main__":
     rbParser = ROSBagParser()
-    rbParser.readBagFile()
+    timeit.timeit()
