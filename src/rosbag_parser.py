@@ -59,7 +59,7 @@ class ROSBagParser:
                     rospy.loginfo("Translation: {} m ({} cm)".format(
                         str(translation), str(translation*100)))
 
-                    # TODO: Publish data to motion model
+                    # TODO: Publish data to motion model node
 
                 elif (topic == "Observations"):
                     rospy.loginfo("Reading Sensor Model...")
@@ -76,7 +76,7 @@ class ROSBagParser:
                     bearing = msg.bearing
                     rospy.loginfo("Bearing:\n{}".format(str(bearing)))
 
-                    # TODO: Publish data to sensor model
+                    # TODO: Publish data to sensor model node
 
         finally:
             self.ROSBag.close()
