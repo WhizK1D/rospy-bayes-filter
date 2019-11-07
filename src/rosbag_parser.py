@@ -8,6 +8,7 @@ import math
 import tf
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point
+import rospkg
 from rviz_utils import *
 
 
@@ -16,14 +17,15 @@ class ROSBagParser:
     Simple class to parse the bag file and spit out the messages
     from the same for other nodes to consume
     '''
-    def __init__(self, rosbagPath="../data/grid.bag"):
+    def __init__(self, rosbagPath="/data/grid.bag"):
         '''
         Constructor with optional path for specifying grid bag file
         '''
 
         # Initializations for ROS Bag and landmark tags
-        self.ROSBag = rosbag.Bag(rosbagPath)
-        self.outputFile = "../output/estimations.txt"
+        basePath = rospkg.RosPack().get_path('ros_pa3')
+        self.ROSBag = rosbag.Bag(basePath + rosbagPath)
+        self.outputFile = basePath + "/output/estimations.txt"
         self.tagArray = numpy.array([(125, 525), (125, 325), (125, 125),
                 (425, 125), (425, 325), (425, 525)])
 
