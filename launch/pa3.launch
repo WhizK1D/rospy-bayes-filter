@@ -1,5 +1,7 @@
 <launch>
 
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find ros_pa3)/include/config.rviz" />
+  <node type="tagGenerator.py" pkg="ros_pa3" name="rviz_tag_generator" />
+  <node type="rosbag_parser.py" pkg="ros_pa3" name="bayes_localizer" />
 
 </launch>

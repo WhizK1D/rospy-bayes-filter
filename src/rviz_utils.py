@@ -11,7 +11,7 @@ Based on basic example provided in scripts/markers_example.py
 '''
 
 
-def draw(points, viz_publisher, type=0, color=(1.0, 0.0, 0.0, 1.0)):
+def draw(points, viz_publisher, type=0, color=(1.0, 0.0, 1.0, 0.5)):
     '''
     Function to publish messages for drawing a line between 2 points
 
@@ -22,27 +22,30 @@ def draw(points, viz_publisher, type=0, color=(1.0, 0.0, 0.0, 1.0)):
     # Initialize the marker to publish
     marker = Marker()
     marker.header.frame_id = "/map"
-    marker.id = type
+    marker.id = type # Different ID so that cubes are not overwritten by lines
     if type == 1:
         marker.type = marker.CUBE_LIST
     else:
         marker.type = marker.LINE_STRIP
     marker.action = marker.ADD
 
+    # Set marker scales
     if type == 1:
         marker.scale.x = 0.15
         marker.scale.y = 0.15
         marker.scale.z = 0.15
     else:
-        marker.scale.x = 0.05
-        marker.scale.y = 0.05
-        marker.scale.z = 0.05
+        marker.scale.x = 0.02
+        marker.scale.y = 0.02
+        marker.scale.z = 0.01
 
+    # Set marker colors
     marker.color.a = color[0]
     marker.color.r = color[1]
     marker.color.g = color[2]
     marker.color.b = color[3]
 
+    # Set marker pose
     marker.pose.orientation.x = 0.0
     marker.pose.orientation.y = 0.0
     marker.pose.orientation.z = 0.0
@@ -52,6 +55,7 @@ def draw(points, viz_publisher, type=0, color=(1.0, 0.0, 0.0, 1.0)):
     marker.pose.position.y = 0.0
     marker.pose.position.z = 0.0
 
+    # Generate the list of markers
     marker.points = []
     for point in points:
         marker_point = Point()
